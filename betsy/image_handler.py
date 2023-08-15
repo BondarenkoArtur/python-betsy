@@ -133,6 +133,10 @@ def get_image_object(img_path: str) -> Image.Image:
     return Image.open(img_path)
 
 
+def prepare_image(img_path: str):
+    pass
+
+
 def handle_image(imageObject, displaytime=5):
     # Potentially uncessary
     new_im = Image.new("RGB", imageObject.size)
