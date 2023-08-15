@@ -18,6 +18,7 @@ def prepare_images():
     """
     for file in os.listdir(PATH_PREFIX):
         if not file.__contains__("DS_Store"):
+            print("Processing image:", PATH_PREFIX + file)
             prepare_image(PATH_PREFIX + file)
 
 

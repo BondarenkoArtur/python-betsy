@@ -17,6 +17,9 @@ for x in inventory["inventory"]:
 
 netInt = "enp1s0"
 
+LOADED_IMAGES = {}
+METADATA = {}
+
 
 # Tile images returns a 2d array of an input image split into tiles of given size.
 # crop-false will scale, crop-true will crop.
@@ -107,19 +110,19 @@ def send_reset(inv=inventory):
             csock.send_commands("reset firmware", destaddr)
 
 
-def handle_gif(imageObject, duration=5):
+def handle_gif(image_object, duration=5):
     # TODO: Duration is time to play each gif in seconds, rather than loops
     timetot = 0
+    if image_object.filename not in LOADED_IMAGES:
+        prepare_image(image_object.filename)
+    image = LOADED_IMAGES[image_object.filename]
+    sleeps = METADATA[image_object.filename]
     while timetot < duration:
         # Display individual frames from the loaded animated GIF file
-        for frame in range(0, imageObject.n_frames):
+        for frame in range(0, len(image)):
             start_time = datetime.datetime.now()
-            imageObject.seek(frame)
-            sleep = imageObject.info['duration'] / 1000
-            sleep = sleep if sleep > 0 else 0.16
-            new_im = Image.new("RGB", imageObject.size)
-            new_im.paste(imageObject)
-            hl = tile_img(new_im, 18, crop=False)  # False = scale.
+            hl = image[frame]
+            sleep = sleeps[frame]
             send_images(hl)
             timetot += sleep
             end_time = datetime.datetime.now()
@@ -134,7 +137,20 @@ def get_image_object(img_path: str) -> Image.Image:
 
 
 def prepare_image(img_path: str):
-    pass
+    LOADED_IMAGES[img_path] = []
+    METADATA[img_path] = []
+    image_object = get_image_object(img_path)
+    if getattr(image_object, "is_animated", True):
+        for frame in range(0, image_object.n_frames):
+            image_object.seek(frame)
+            sleep = image_object.info['duration'] / 1000
+            sleep = sleep if sleep > 0 else 0.16
+            METADATA[img_path].append(sleep)
+            new_im = Image.new("RGB", image_object.size)
+            new_im.paste(image_object)
+            hl = tile_img(new_im, 18, crop=False)  # False = scale.
+            LOADED_IMAGES[img_path].append(hl)
+
 
 
 def handle_image(imageObject, displaytime=5):
