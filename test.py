@@ -1,10 +1,9 @@
 #!/bin/env python3
 
-from PIL import Image
 import os
 import random
 import time
-from betsy.image_handler import send_reset, handle_gif
+from betsy.image_handler import send_reset, handle_gif, get_image_object
 
 # Here, draw a picture!
 # img = Image.open("nyan2.jpg")
@@ -26,8 +25,7 @@ while 1:
   random.shuffle(files)
   for file in files:
     if (not file.__contains__("DS_Store")):
-      imgPath = pathPrefix + file
-      imageObject = Image.open(imgPath)
+      imageObject = get_image_object(img_path=pathPrefix + file)
       if getattr(imageObject, "is_animated", True):
         handle_gif(imageObject)
       else:

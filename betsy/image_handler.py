@@ -134,6 +134,9 @@ def handle_gif(imageObject, duration=5):
             time.sleep(actual_sleep)
 
 
+def get_image_object(img_path: str) -> Image.Image:
+    return Image.open(img_path)
+
 
 
 def handle_image(imageObject, displaytime=5):
