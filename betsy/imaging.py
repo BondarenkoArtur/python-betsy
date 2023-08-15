@@ -6,6 +6,7 @@
 
 import numpy as np
 
+# Deprecated
 class ImageProcessor(object):
     IDENTITY_T = np.array([
         [ 1.0, 0.0, 0.0 ],
