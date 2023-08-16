@@ -17,7 +17,7 @@ def prepare_images():
     Function for going once through all the files to generate scaled tiles for each frame.
     """
     for file in os.listdir(PATH_PREFIX):
-        if not file.__contains__("DS_Store"):
+        if "DS_Store" not in file:  # Ignoring thumbnails
             print("Processing image:", PATH_PREFIX + file)
             prepare_image(PATH_PREFIX + file)
 
@@ -33,7 +33,7 @@ def loop_with_images():
         files = os.listdir(PATH_PREFIX)
         random.shuffle(files)
         for file in files:
-            if not file.__contains__("DS_Store"):  # Ignoring thumbnails
+            if "DS_Store" not in file:  # Ignoring thumbnails
                 image_object = get_image_object(img_path=PATH_PREFIX + file)
                 if getattr(image_object, "is_animated", True):
                     handle_gif(image_object)
